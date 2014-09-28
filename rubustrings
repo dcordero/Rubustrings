@@ -1,0 +1,88 @@
+#!/usr/bin/env ruby
+
+%w[colored].each do |this_gem|
+  begin
+    require this_gem
+  rescue LoadError
+    abort "Please install the '#{this_gem}' gem."
+  end
+end
+
+def openAndReadFile(fileName)
+  File.open(fileName, 'r').read if File.exist?(fileName)
+end
+
+def removeCommentsAndEmptyLines(fileData)
+  multilineCommentsRegex = /\/\*.*?\*\//m
+  emptyLinesRegex = /^$\n/
+
+  fileData.gsub(multilineCommentsRegex, "").gsub(emptyLinesRegex, "") if fileData
+end
+
+def validateFormat(line)
+  localizableStringsFormatRegex = /^\"((?:\\.|[^\\"])*?)\"\s=\s\"((?:\\.|[^\\"])*?)\";/
+  match = localizableStringsFormatRegex.match line
+end
+
+def validateSpecialCharacters(translationKey, translationValue)
+  variablesRegex = /(?:%[hlqLztj]?[@%dDuUxXoOfeEgGcCsSpaAF]|\\n|\\r)/
+  keyVariables = translationKey.scan(variablesRegex) 
+  valueVariables = translationValue.scan(variablesRegex) 
+
+  return keyVariables.sort == valueVariables.sort
+end
+
+def validateSpecialBeginning(translationKey, translationValue)
+  beginningRegex = /^(?:\s|\n|\r)/
+
+  return true unless translationKey =~ beginningRegex || translationValue =~ beginningRegex
+  translationKey.chars.first == translationValue.chars.first
+end
+
+def validateSpecialEnding(translationKey, translationValue)
+  endingRegex = /(?:\s|\n|\r)$/
+
+  return true unless translationKey =~ endingRegex || translationValue =~ endingRegex
+  translationKey.chars.last == translationValue.chars.last
+end
+
+def validateTranslationLine(line)
+  match = validateFormat line
+  return puts "✘ Invalid format: #{line}".red unless match
+
+  validationSpecialCharacters = validateSpecialCharacters match[1],match[2]
+  puts "✘ Number of variables mismatch: #{line}".red unless validationSpecialCharacters
+
+  validationSpecialBeginning = validateSpecialBeginning match[1],match[2]
+  puts "✘ Beginning mismatch: #{line}".red unless validationSpecialBeginning
+
+  validationSpecialEnding = validateSpecialEnding match[1],match[2]
+  puts "✘ Ending mismatch: #{line}".red unless validationSpecialEnding
+
+  return validationSpecialCharacters && validationSpecialBeginning && validationSpecialEnding
+end
+
+def validateLocalizableStringFile (fileName)
+  fileData = openAndReadFile fileName
+  cleanedStrings = removeCommentsAndEmptyLines fileData
+
+  return puts "✘ No translations found in file: #{fileName}".red unless cleanedStrings
+
+  validationResult = true
+  cleanedStrings.each_line do |line|
+    validationResult &= validateTranslationLine line
+  end
+  return validationResult
+end
+
+abort "No strings file provided" if ARGV.empty?
+ARGV.each do |fileName| 
+  puts "Processing file: \"#{fileName}\"".blue
+  result = validateLocalizableStringFile fileName
+
+  if result
+    puts "✓ Strings file validated succesfully".bold.green
+  else 
+    puts "✘ Some errors detected".bold.red
+  end
+end 
