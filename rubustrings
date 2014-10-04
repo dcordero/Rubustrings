@@ -51,11 +51,17 @@ def validate_special_ending(translation_key, translation_value)
   translation_key.chars.last == translation_value.chars.last
 end
 
+def check_translation_length(translation_key, translation_value)
+  translation_value.length / translation_key.length < 3
+end
+
 def validate_translation_line(line)
   match = validate_format line
   return print "✘ Error, invalid format: #{line}".red unless match
 
   print "⊗ Warning, no translated string: #{line}".yellow unless match[2].length > 0
+
+  print "⊗ Warning, translation significantly large: #{line}".yellow unless check_translation_length match[1], match[2]
 
   validation_special_characters = validate_special_characters match[1],match[2]
   print "✘ Error, number of variables mismatch: #{line}".red unless validation_special_characters

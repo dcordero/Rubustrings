@@ -19,7 +19,8 @@ Currently Rubustrings validates:
 * **Special characters at the beginning or at the end**: If the original string begins or ends with a white space,\n or \r it tests that the translation also does.
 
 It also warning on:
-* ** Untranslated strings
+* **Untranslated strings**: In missing translations
+* **Translation significantly large**: In translations 3 times larger than original string
 
 ## Example
 
@@ -39,10 +40,6 @@ dcordero@silver:~$ ./rubustrings Localizable.strings
 Processing file: "Localizable.strings"
 ✓ Strings file validated succesfully
 ```
-
-## Future validators to include:
-
-* Warning if the translation is significatly larger than the original string.
 
 ## License
 
