@@ -41,3 +41,7 @@ Processing file: "Localizable.strings"
 
 * Warning on untranslated strings
 * Warning if the translation is significatly larger than the original string.
+
+## License
+
+MIT License (MIT) Copyright (c) 2014 @dcordero

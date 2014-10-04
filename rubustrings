@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # Rubustrings
-# A format validator for Localizable.string files.
+# A format validator for Localizable.strings files.
 # The MIT License (MIT) Copyright (c) 2014 @dcordero
 # https://github.com/dcordero/Rubustrings
 
