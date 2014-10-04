@@ -30,7 +30,7 @@ def validate_format(line)
 end
 
 def validate_special_characters(translation_key, translation_value)
-  variables_regex = /(?:%[hlqLztj]?[@%dDuUxXoOfeEgGcCsSpaAF]|\\n|\\r)/
+  variables_regex = /%[hlqLztj]?[@%dDuUxXoOfeEgGcCsSpaAF]/
   key_variables = translation_key.scan(variables_regex) 
   value_variables = translation_value.scan(variables_regex) 
 
