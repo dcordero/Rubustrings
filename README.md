@@ -1,7 +1,6 @@
 # Rubustrings
 
-A format validator for Localizable.string files.
-
+A format validator for Localizable.strings files.
 
 ## Usage
 
@@ -15,8 +14,8 @@ It only needs the files to validate as arguments
 
 Currently Rubustrings validates:
 
-* **The syntaxis of the strings file**: Just the format of each line, ("key" = "value");
-* **Special characters (\n, \r, %@, %d, %ld,...)**: It checks that the translation include the same set of them than the original string.
+* **The syntaxis of the strings file**: Just the format of each line: "key" = "value";
+* **Dynamic values (%@, %d, %ld,...)**: It checks that the translation include the same set of them than the original string.
 * **Special characters at the beginning or at the end**: If the original string begins or ends with a white space,\n or \r it tests that the translation also does.
 
 ## Example
