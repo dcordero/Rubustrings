@@ -18,6 +18,9 @@ Currently Rubustrings validates:
 * **Dynamic values (%@, %d, %ld,...)**: It checks that the translation include the same set of them than the original string.
 * **Special characters at the beginning or at the end**: If the original string begins or ends with a white space,\n or \r it tests that the translation also does.
 
+It also warning on:
+* ** Untranslated strings
+
 ## Example
 
 ```
@@ -39,7 +42,6 @@ Processing file: "Localizable.strings"
 
 ## Future validators to include:
 
-* Warning on untranslated strings
 * Warning if the translation is significatly larger than the original string.
 
 ## License
