@@ -95,7 +95,9 @@ ARGV.each do |file_name|
 
   if result
     puts "\nResult: ✓ Strings file validated succesfully".bold.green
+    exit 0
   else 
     puts "\nResult: ✘ Some errors detected".bold.red
+    exit 1
   end
 end 
