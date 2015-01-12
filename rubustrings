@@ -14,7 +14,7 @@
 end
 
 def open_and_read_file(file_name)
-  File.open(file_name, 'r').read if File.exist?(file_name)
+  File.open(file_name, 'rb:utf-16:utf-8').read if File.exist?(file_name)
 end
 
 def remove_comments_and_empty_lines(file_data)
