@@ -1,6 +1,8 @@
 # Rubustrings
 
-A format validator for Localizable.strings files.
+Check the format and consistency of the Localizable.strings files of iOS Apps with multi-language support
+
+[Rubustrings](https://github.com/dcordero/RubustringsXml) is also available for Android [here](https://github.com/dcordero/RubustringsXml) 
 
 ## Usage
 
