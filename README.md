@@ -1,4 +1,4 @@
-# Rubustrings
+# Rubustrings [![Build Status](https://travis-ci.org/dcordero/Rubustrings.svg?branch=master)](https://travis-ci.org/dcordero/Rubustrings)
 
 Check the format and consistency of the Localizable.strings files of iOS Apps with multi-language support
 
