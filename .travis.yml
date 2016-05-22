@@ -1,0 +1,7 @@
+language: objective-c
+
+before_install:
+  - brew install bats
+
+script:
+  - bats tests/tests.bats
