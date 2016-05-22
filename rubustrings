@@ -79,7 +79,7 @@ def validate_localizable_string_file (file_name)
   file_data = open_and_read_file file_name
   cleaned_strings = remove_comments_and_empty_lines file_data
 
-  return puts "✘ Error, no translations found in file: #{file_name}".red unless cleaned_strings
+  return puts "✘ Error, no translations found in file: #{file_name}".red if cleaned_strings.empty?
 
   validation_result = true
   cleaned_strings.each_line do |line|
