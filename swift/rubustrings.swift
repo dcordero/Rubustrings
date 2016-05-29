@@ -9,6 +9,21 @@ extension String {
     var red: String { return "\u{001B}[0;31m" + self + "\u{001B}[0;0m" }
 }
 
+extension String {
+    var lines: [String] {
+        return self.componentsSeparatedByString("\n")
+    }
+    
+    func removeComments() -> String {
+        let commentsRegex = try! NSRegularExpression(pattern: "\\/\\*.*?\\*\\/", options: .CaseInsensitive)
+        return commentsRegex.stringByReplacingMatchesInString(self, options: [], range: NSRange(0..<self.utf16.count), withTemplate: "")
+    }
+    
+    func removeEmptyLines() -> String {
+        return self.componentsSeparatedByString("\n").filter { $0 != "" }.joinWithSeparator("\n")
+    }
+}
+
 guard Process.arguments.count > 1 else {
     print("No strings file provided")
     exit(0)
@@ -19,45 +34,60 @@ func openAndReadFile(fileName: String) -> String? {
         return try String(contentsOfFile: fileName, encoding: NSUTF16StringEncoding)
     }
     catch {
-        print("\n✘ Error reading file: \(fileName)".red)
+        print("✘ Error reading file: \(fileName)".red)
     }
     return nil
 }
 
-func removeComments(fileData: String) -> String {
-    let multilineCommentsRegex = try! NSRegularExpression(pattern: "\\/\\*.*?\\*\\/", options: .CaseInsensitive)
-    return multilineCommentsRegex.stringByReplacingMatchesInString(fileData, options: [], range: NSRange(0..<fileData.utf16.count), withTemplate: "")
+func validateFormat(line: String) -> Bool {
+    let localizableStringsFormatRegex = try! NSRegularExpression(pattern: "\\\"(.*)?\\\"\\s=\\s\\\"(.*)?\";", options: .CaseInsensitive)
     
-}
-
-func removeEmptyLines(fileData: String) -> String {
-    return fileData.componentsSeparatedByString("\n").filter { $0 != "" }.joinWithSeparator("\n")
-}
-
-func validateLocalizableStringFile(fileName: String) -> Bool {
-    
-    if let fileData = openAndReadFile(fileName) {
-        
-        let noComments = removeComments(fileData)
-        let noEmptyLinex = removeEmptyLines(noComments)
-        
-        print(noEmptyLinex)
+    if localizableStringsFormatRegex.numberOfMatchesInString(line, options: .ReportProgress, range: NSRange(0..<line.utf16.count)) == 0 {
+        print("✘ Error, invalid format: \(line)".red)
+        return false
     }
     
+    return true
+}
+
+func validateTranslationLine(line: String) -> Bool {
+    validateFormat(line)
+    
     return false
+}
+
+func validateLocalizableStringsFile(fileName: String) -> Bool {
+    
+    guard let fileData = openAndReadFile(fileName) else {
+        return false
+    }
+    
+    let cleaned_strings = fileData.removeComments().removeEmptyLines()
+    guard !cleaned_strings.isEmpty else {
+        print("✘ Error, no translations found in file: \(fileName)".red)
+        return false
+    }
+    
+    for line in cleaned_strings.lines {
+        validateTranslationLine(line)
+        
+        print ("---> \(line)")
+    }
+    
+    return true
 }
 
 
 
 var error = false
 for fileName in Process.arguments where fileName != Process.arguments.first {
-    print("\nProcessing file: \(fileName)".blue)
+    print("Processing file: \(fileName)".blue)
     
-    if validateLocalizableStringFile(fileName) {
-        print("\nResult: ✓ Strings file validated succesfully".green)
+    if validateLocalizableStringsFile(fileName) {
+        print("Result: ✓ Strings file validated succesfully".green)
     }
     else {
-        print("\nResult: ✘ Some errors detected".red)
+        print("Result: ✘ Some errors detected".red)
         error = true
     }
 }
