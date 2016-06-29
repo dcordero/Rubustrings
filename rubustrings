@@ -13,15 +13,58 @@
   end
 end
 
+# Possible levels are :error, :result_error, :warning, :result_success, :info
+def log_output(level, file_name, line_number, xcode_output, message)
+  message = message.chomp
+  if xcode_output
+    case level
+      when :error, :result_error
+        puts "#{file_name}:#{line_number}: error: #{message}"
+      when :result_error
+        puts ":: error: ✘ #{message}"
+      when :warning
+        puts "#{file_name}:#{line_number}: warning: #{message}"
+      when :result_success
+        puts "✓ #{message}"
+      else
+        puts "#{message}"
+    end
+  else
+    case level
+      when :error
+        puts "✘ Error, #{message}".red
+      when :result_error
+        puts "\nResult: ✘ #{message}".bold.red
+      when :warning
+        puts "⊗ Warning, #{message}".yellow
+      when :result_success
+        puts "\nResult: ✓ #{message}".bold.green
+      when :info
+        puts "#{message}".blue
+    end
+  end
+end
+
+def add_line_numbers(file_data)
+  line_num = 0
+  result = ""
+  file_data.each_line { |line|
+    line_num += 1
+    result += "#{line_num} #{line}"
+  }
+  return result
+end
+
 def open_and_read_file(file_name)
   File.open(file_name, 'rb:utf-16:utf-8').read if File.exist?(file_name)
 end
 
 def remove_comments_and_empty_lines(file_data)
   multiline_comments_regex = /\/\*.*?\*\//m
-  empty_lines_regex = /^$\n/
+  empty_lines_regex = /^[1-9]\d* $\n/
 
-  file_data.gsub(multiline_comments_regex, "").gsub(empty_lines_regex, "") if file_data
+  file_data_with_lines = add_line_numbers file_data
+  file_data_with_lines.gsub(multiline_comments_regex, "").gsub(empty_lines_regex, "") if file_data
 end
 
 def validate_format(line)
@@ -55,49 +98,72 @@ def check_translation_length(translation_key, translation_value)
   translation_value.length / translation_key.length < 3
 end
 
-def validate_translation_line(line)
+def validate_translation_line(file_name, line, use_xcode)
+  line_number = 0
+
+  empty_regex = /^\d+\s*\n?$/
+  if empty_regex.match line
+    return true
+  end
+
+  numbered_line_regex = /^(\d+) (.*)/
+  numbered_line_match = numbered_line_regex.match line
+
+  return log_output(:error, file_name, line_number, use_xcode, "internal error") unless numbered_line_match
+  line_number = numbered_line_match[1]
+  line = numbered_line_match[2]
+
   match = validate_format line
-  return print "✘ Error, invalid format: #{line}".red unless match
+  return log_output(:error, file_name, line_number, use_xcode, "invalid format: _#{line}_") unless match
 
-  print "⊗ Warning, no translated string: #{line}".yellow unless match[2].length > 0
+  match_key = match[1]
+  match_value = match[2]
 
-  print "⊗ Warning, translation significantly large: #{line}".yellow unless check_translation_length match[1], match[2]
+  log_output(:warning, file_name, line_number, use_xcode, "no translated string: #{line}") unless match_value.length > 0
 
-  validation_special_characters = validate_special_characters match[1],match[2]
-  print "✘ Error, number of variables mismatch: #{line}".red unless validation_special_characters
+  log_output(:warning, file_name, line_number, use_xcode, "translation significantly large: #{line}") unless check_translation_length match_key, match_value
 
-  validation_special_beginning = validate_special_beginning match[1],match[2]
-  print "✘ Error, beginning mismatch: #{line}".red unless validation_special_beginning
+  validation_special_characters = validate_special_characters match_key,match_value
+  log_output(:error, file_name, line_number, use_xcode, "number of variables mismatch: #{line}") unless validation_special_characters
 
-  validation_special_ending = validate_special_ending match[1],match[2]
-  print "✘ Error, ending mismatch: #{line}".red unless validation_special_ending
+  validation_special_beginning = validate_special_beginning match_key,match_value
+  log_output(:error, file_name, line_number, use_xcode, "beginning mismatch: #{line}") unless validation_special_beginning
+
+  validation_special_ending = validate_special_ending match_key,match_value
+  log_output(:error, file_name, line_number, use_xcode, "ending mismatch: #{line}") unless validation_special_ending
 
   return validation_special_characters && validation_special_beginning && validation_special_ending
 end
 
-def validate_localizable_string_file (file_name)
+def validate_localizable_string_file (file_name, use_xcode)
   file_data = open_and_read_file file_name
   cleaned_strings = remove_comments_and_empty_lines file_data
 
-  return puts "✘ Error, no translations found in file: #{file_name}".red if cleaned_strings.empty?
+  return log_output(:error, file_name, 0, use_xcode, "no translations found in file #{file_name}") if cleaned_strings.empty?
 
   validation_result = true
   cleaned_strings.each_line do |line|
-    validation_result &= validate_translation_line line
+    validation_result &= validate_translation_line file_name,line,use_xcode
   end
   return validation_result
 end
 
+use_xcode=false
+
 abort "No strings file provided" if ARGV.empty?
-ARGV.each do |file_name| 
-  puts "Processing file: \"#{file_name}\"\n".blue
-  result = validate_localizable_string_file file_name
+ARGV.each do |file_name|
+  if file_name == "-xcode"
+    use_xcode=true
+    next
+  end
+  log_output(:info, "", 0, use_xcode, "Processing file: \"#{file_name}\"")
+  result = validate_localizable_string_file file_name,use_xcode
 
   if result
-    puts "\nResult: ✓ Strings file validated succesfully".bold.green
+    log_output(:result_success, file_name, 0, use_xcode, "Strings file validated succesfully")
     exit 0
-  else 
-    puts "\nResult: ✘ Some errors detected".bold.red
+  else
+    log_output(:result_error, file_name, 0, use_xcode, "Some errors detected")
     exit 1
   end
 end 
