@@ -19,11 +19,11 @@
 #  multiple targets, this setup might need to be repeated for each one
 #
 
-VERIFY_TOOL=$(dirname "${0}")"/rubustrings"
+RUBUSTRINGS=$(dirname "${0}")"/rubustrings"
 INPUT_FILE="${INPUT_FILE_PATH}"
 OUTPUT_FILE="${SCRIPT_OUTPUT_FILE_0}"
 
-"${VERIFY_TOOL}" -xcode "${INPUT_FILE}"
+"${RUBUSTRINGS}" -xcode "${INPUT_FILE}"
 if [[ 0 -eq $? ]]; then
 	cp "${INPUT_FILE}" "${OUTPUT_FILE}"
 else
