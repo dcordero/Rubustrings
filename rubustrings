@@ -20,8 +20,6 @@ def log_output(level, file_name, line_number, xcode_output, message)
     case level
       when :error, :result_error
         puts "#{file_name}:#{line_number}: error: #{message}"
-      when :result_error
-        puts ":: error: ✘ #{message}"
       when :warning
         puts "#{file_name}:#{line_number}: warning: #{message}"
       when :result_success
