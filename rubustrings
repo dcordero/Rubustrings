@@ -41,7 +41,7 @@ end
 
 def validate_special_characters(translation_key, translation_value)
   variables_regex = /%(?:([1-9]\d*)\$)?([hlqLztj])?([@dDuUxXoOfeEgGcCsSpaAF])/
-  # sort by (then remove) according to parameter field, if specified
+  # sort by according to parameter field, if specified
   key_variables = translation_key.scan(variables_regex).stable_sort_by{ |r| r[0].to_i }
   value_variables = translation_value.scan(variables_regex).stable_sort_by{ |r| r[0].to_i }
 
