@@ -1,0 +1,8 @@
+[34mProcessing file: "tests/suites/Localizable_with_invalid_params.in"
+[0m
+[31m✘ Error, number of variables mismatch: "NO_ARGUMENT" = "Invalid format %@";
+[0m[31m✘ Error, number of variables mismatch: "MIXED_%@%d%@%d" = "Some %@ %d %@ with incorrect %@ arguments";
+[0m[31m✘ Error, number of variables mismatch: "MIXED_POSITION_1_%@%d" = "Both %1$@ and %2$@";
+[0m[31m✘ Error, number of variables mismatch: "MIXED_POSITION_2_%@%d" = "Both %2$@ and %1$d";
+[0m[31m[1m
+Result: ✘ Some errors detected[0m[0m

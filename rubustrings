@@ -13,6 +13,16 @@
   end
 end
 
+module Enumerable
+  def stable_sort
+    sort_by.with_index { |x, idx| [x, idx] }
+  end
+
+  def stable_sort_by
+    sort_by.with_index { |x, idx| [yield(x), idx] }
+  end
+end
+
 def open_and_read_file(file_name)
   File.open(file_name, 'rb:utf-16:utf-8').read if File.exist?(file_name)
 end
@@ -30,11 +40,12 @@ def validate_format(line)
 end
 
 def validate_special_characters(translation_key, translation_value)
-  variables_regex = /%[hlqLztj]?[@%dDuUxXoOfeEgGcCsSpaAF]/
-  key_variables = translation_key.scan(variables_regex) 
-  value_variables = translation_value.scan(variables_regex) 
+  variables_regex = /%(?:([1-9]\d*)\$)?([hlqLztj])?([@dDuUxXoOfeEgGcCsSpaAF])/
+  # sort by (then remove) according to parameter field, if specified
+  key_variables = translation_key.scan(variables_regex).stable_sort_by{ |r| r[0].to_i }.map{ |r| [r[1], r[2]] }
+  value_variables = translation_value.scan(variables_regex).stable_sort_by{ |r| r[0].to_i }.map{ |r| [r[1], r[2]] }
 
-  return key_variables.sort == value_variables.sort
+  return key_variables == value_variables
 end
 
 def validate_special_beginning(translation_key, translation_value)
