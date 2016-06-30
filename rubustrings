@@ -15,8 +15,8 @@ end
 
 # Possible levels are :error, :result_error, :warning, :result_success, :info
 def log_output(level, file_name, line_number, xcode_output, message)
-  message = message.chomp
   if xcode_output
+    message = message.chomp
     case level
       when :error, :result_error
         puts "#{file_name}:#{line_number}: error: #{message}"
@@ -137,7 +137,7 @@ def validate_localizable_string_file (file_name, use_xcode)
   file_data = open_and_read_file file_name
   cleaned_strings = remove_comments_and_empty_lines file_data
 
-  return log_output(:error, file_name, 0, use_xcode, "no translations found in file #{file_name}") if cleaned_strings.empty?
+  return log_output(:error, file_name, 0, use_xcode, "no translations found in file: #{file_name}") if cleaned_strings.empty?
 
   validation_result = true
   cleaned_strings.each_line do |line|
@@ -154,7 +154,7 @@ ARGV.each do |file_name|
     use_xcode=true
     next
   end
-  log_output(:info, "", 0, use_xcode, "Processing file: \"#{file_name}\"")
+  log_output(:info, "", 0, use_xcode, "Processing file: \"#{file_name}\"\n")
   result = validate_localizable_string_file file_name,use_xcode
 
   if result
