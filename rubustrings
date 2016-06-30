@@ -42,9 +42,32 @@ end
 def validate_special_characters(translation_key, translation_value)
   variables_regex = /%(?:([1-9]\d*)\$)?([hlqLztj])?([@dDuUxXoOfeEgGcCsSpaAF])/
   # sort by (then remove) according to parameter field, if specified
-  key_variables = translation_key.scan(variables_regex).stable_sort_by{ |r| r[0].to_i }.map{ |r| [r[1], r[2]] }
-  value_variables = translation_value.scan(variables_regex).stable_sort_by{ |r| r[0].to_i }.map{ |r| [r[1], r[2]] }
+  key_variables = translation_key.scan(variables_regex).stable_sort_by{ |r| r[0].to_i }
+  value_variables = translation_value.scan(variables_regex).stable_sort_by{ |r| r[0].to_i }
 
+  return true unless key_variables.any? || value_variables.any?
+  return false unless key_variables.count == value_variables.count
+
+  # we should not have any parameter fields in the keys
+  return false unless key_variables.last[0] == nil
+
+  # if we do have parameter fields, we need to include all of them
+  if value_variables[0][0] != nil
+    return false unless value_variables.last[0] != nil
+    validation_result = true
+    value_variables.each_with_index { |v, idx|
+      if v[0].to_i != idx + 1
+        validation_result = false
+      end
+    }
+    return false unless validation_result
+  else
+    return false unless value_variables.last[0] == nil
+  end
+
+  # remove parameter field
+  key_variables = key_variables.map{ |v| [v[1], v[2]] }
+  value_variables = value_variables.map{ |v| [v[1], v[2]] }
   return key_variables == value_variables
 end
 
