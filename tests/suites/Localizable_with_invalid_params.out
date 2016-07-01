@@ -1,13 +1,14 @@
 [34mProcessing file: "tests/suites/Localizable_with_invalid_params.in"
 [0m
-[31m✘ Error, number of variables mismatch: "NO_ARGUMENT" = "Invalid format %@";
-[0m[31m✘ Error, number of variables mismatch: "MIXED_%@%d%@%d" = "Some %@ %d %@ with incorrect %@ arguments";
-[0m[31m✘ Error, number of variables mismatch: "MIXED_POSITION_1_%@%d" = "Both %1$@ and %2$@";
-[0m[31m✘ Error, number of variables mismatch: "MIXED_POSITION_2_%@%d" = "Both %2$@ and %1$d";
-[0m[31m✘ Error, number of variables mismatch: "MISSING_PARAM_%@%@%@" = "Have %1$@ and %3$@ but missing 2";
-[0m[31m✘ Error, number of variables mismatch: "MISSING_PARAM_2_%@%@%@" = "Have %1$@ and %2$@ but missing 3";
-[0m[31m✘ Error, number of variables mismatch: "NOT_ALL_SPECIFIED_%@%@%@" = "There are %1$@ and %2$@ but no number for %@";
-[0m[31m✘ Error, number of variables mismatch: "POSITION_IN_KEY_1_%1$@_%@" = "%@ %@";
-[0m[31m✘ Error, number of variables mismatch: "POSITION_IN_KEY_2_%@_%1$@" = "%@ %@";
+[31m✘ Error, variables mismatch: "NO_ARGUMENT" = "Invalid format %@";
+[0m[31m✘ Error, variables mismatch: "MIXED_%@%d%@%d" = "Some %@ %d %@ with incorrect %@ arguments";
+[0m[31m✘ Error, variables mismatch: "MIXED_POSITION_1_%@%d" = "Both %1$@ and %2$@";
+[0m[31m✘ Error, variables mismatch: "MIXED_POSITION_2_%@%d" = "Both %2$@ and %1$d";
+[0m[31m✘ Error, variables mismatch: "MISSING_PARAM_%@%@%@" = "Have %1$@ and %3$@ but missing 2";
+[0m[31m✘ Error, variables mismatch: "MISSING_PARAM_2_%@%@%@" = "Have %1$@ and %2$@ but missing 3";
+[0m[31m✘ Error, variables mismatch: "NOT_ALL_SPECIFIED_%@%@%@" = "There are %1$@ and %2$@ but no number for %@";
+[0m[31m✘ Error, variables mismatch: "POSITION_IN_KEY_1_%1$@_%@" = "%@ %@";
+[0m[31m✘ Error, variables mismatch: "POSITION_IN_KEY_2_%@_%1$@" = "%@ %@";
+[0m[31m✘ Error, variables mismatch: "WRONG_LENGTH_%d" = "Short %hd";
 [0m[31m[1m
 Result: ✘ Some errors detected[0m[0m
