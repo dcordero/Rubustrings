@@ -19,7 +19,7 @@ def open_and_read_file(file_name)
   begin
     File.open(file_name, 'rb:utf-16:utf-8').read
   rescue
-    File.open(file_name, 'r').read
+    File.open(file_name, 'rb:utf-8:utf-8').read
   end
 end
 
