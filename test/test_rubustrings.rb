@@ -45,4 +45,26 @@ class RubustringsTest < Minitest::Test
     assert_match output, out
     assert_empty err
   end
+
+  def test_localizable_with_invalid_params
+    output = File.read('test/suites/Localizable_with_invalid_params.out')
+
+    out, err = capture_io do
+      Rubustrings.validate(['test/suites/Localizable_with_invalid_params.in'])
+    end
+
+    assert_match output, out
+    assert_empty err
+  end
+
+  def test_localizable_with_valid_params
+    output = File.read('test/suites/Localizable_with_valid_params.out')
+
+    out, err = capture_io do
+      Rubustrings.validate(['test/suites/Localizable_with_valid_params.in'])
+    end
+
+    assert_match output, out
+    assert_empty err
+  end
 end

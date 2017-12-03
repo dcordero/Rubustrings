@@ -84,11 +84,43 @@ module Rubustrings
     end
 
     def validate_special_characters(translation_key, translation_value)
-      variables_regex = /%[hlqLztj]?[@%dDuUxXoOfeEgGcCsSpaAF]/
-      key_variables = translation_key.scan(variables_regex)
-      value_variables = translation_value.scan(variables_regex)
+      # Remove %% to avoid ambiguous scenarios with adjacent formats like "%s%%s"
+      translation_key = translation_key.gsub("%%", " ")
+      translation_value = translation_value.gsub("%%", " ")
 
-      key_variables.sort == value_variables.sort
+      variables_regex = /\x25(?:([1-9]\d*)\$|\(([^\)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?(hh|ll|[hlLzjt])?([b-fiosuxX@])/
+      position_index = 0
+      length_index = 7
+      format_index = 8
+
+      # sort by according to parameter field, if specified
+      key_variables = translation_key.scan(variables_regex).stable_sort_by{ |r| r[position_index].to_i }
+      value_variables = translation_value.scan(variables_regex).stable_sort_by{ |r| r[position_index].to_i }
+
+      return true unless key_variables.any? || value_variables.any?
+      return false unless key_variables.count == value_variables.count
+
+      # we should not have any parameter fields in the keys
+      return false unless key_variables.last[position_index] == nil
+
+      # if we do have parameter fields, we need to include all of them
+      if value_variables[0][position_index] != nil
+        return false unless value_variables.last[position_index] != nil
+        validation_result = true
+        value_variables.each_with_index { |v, idx|
+          if v[position_index].to_i != idx + 1
+            validation_result = false
+          end
+        }
+        return false unless validation_result
+      else
+        return false unless value_variables.last[position_index] == nil
+      end
+
+      # remove parameter field
+      key_variables = key_variables.map{ |v| [v[length_index], v[format_index]] }
+      value_variables = value_variables.map{ |v| [v[length_index], v[format_index]] }
+      key_variables == value_variables
     end
 
     def validate_special_beginning(translation_key, translation_value)
@@ -133,7 +165,7 @@ module Rubustrings
       log_output(:warning, file_name, line_number, "translation significantly large: #{line}") unless check_translation_length match_key, match_value
 
       validation_special_characters = validate_special_characters match_key, match_value
-      log_output(:error, file_name, line_number, "number of variables mismatch: #{line}") unless validation_special_characters
+      log_output(:error, file_name, line_number, "variables mismatch: #{line}") unless validation_special_characters
 
       validation_special_beginning = validate_special_beginning match_key, match_value
       log_output(:error, file_name, line_number, "beginning mismatch: #{line}") unless validation_special_beginning
@@ -143,5 +175,15 @@ module Rubustrings
 
       validation_special_characters && validation_special_beginning && validation_special_ending
     end
+  end
+end
+
+module Enumerable
+  def stable_sort
+    sort_by.with_index { |x, idx| [x, idx] }
+  end
+
+  def stable_sort_by
+    sort_by.with_index { |x, idx| [yield(x), idx] }
   end
 end
