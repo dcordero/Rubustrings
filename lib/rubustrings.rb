@@ -1,8 +1,8 @@
 
 require 'rubustrings/action'
 
+# The main Rubustrings driver
 module Rubustrings
-  # The main Rubustrings driver
   class << self
     def validate(filenames)
       Action.new.validate(filenames)

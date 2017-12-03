@@ -93,7 +93,7 @@ module Rubustrings
     end
 
     def remove_comments_and_empty_lines(file_data)
-      multiline_comments_regex = /\/\*.*?\*\//m
+      multiline_comments_regex = %r{/\*.*?\*/}m
       empty_lines_regex = /^[1-9]\d* $\n/
 
       file_data_with_lines = add_line_numbers file_data
@@ -133,38 +133,36 @@ module Rubustrings
 
     def validate_translation_line(file_name, line, use_xcode)
       line_number = 0
-  
+
       empty_regex = /^\d+\s*\n?$/
-      if empty_regex.match line
-        return true
-      end
-  
+      return true if empty_regex.match line
+
       numbered_line_regex = /^(\d+) (.*)/
       numbered_line_match = numbered_line_regex.match line
-  
+
       return log_output(:error, file_name, line_number, use_xcode, 'internal error') unless numbered_line_match
       line_number = numbered_line_match[1]
       line = numbered_line_match[2]
-  
+
       match = validate_format line
       return log_output(:error, file_name, line_number, use_xcode, "invalid format: _#{line}_") unless match
-  
+
       match_key = match[1]
       match_value = match[2]
-  
-      log_output(:warning, file_name, line_number, use_xcode, "no translated string: #{line}") unless match_value.length > 0
-  
+
+      log_output(:warning, file_name, line_number, use_xcode, "no translated string: #{line}") if match_value.empty?
+
       log_output(:warning, file_name, line_number, use_xcode, "translation significantly large: #{line}") unless check_translation_length match_key, match_value
-  
+
       validation_special_characters = validate_special_characters match_key, match_value
       log_output(:error, file_name, line_number, use_xcode, "number of variables mismatch: #{line}") unless validation_special_characters
-  
+
       validation_special_beginning = validate_special_beginning match_key, match_value
       log_output(:error, file_name, line_number, use_xcode, "beginning mismatch: #{line}") unless validation_special_beginning
-  
+
       validation_special_ending = validate_special_ending match_key, match_value
       log_output(:error, file_name, line_number, use_xcode, "ending mismatch: #{line}") unless validation_special_ending
-  
+
       validation_special_characters && validation_special_beginning && validation_special_ending
     end
   end
