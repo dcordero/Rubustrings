@@ -66,6 +66,8 @@ else
 fi
 ```
 
+![Xcode setting example](./xcode_setting.png "configuration")
+
 ## License
 
 MIT License (MIT) Copyright (c) 2017 @dcordero

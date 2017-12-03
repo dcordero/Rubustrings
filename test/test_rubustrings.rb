@@ -2,7 +2,7 @@ require 'minitest/autorun'
 require 'rubustrings'
 
 class RubustringsTest < Minitest::Test
-  def test_Localizable_missing_semicolon
+  def test_localizable_missing_semicolon
     output = File.read('test/suites/Localizable_missing_semicolon.out')
 
     out, err = capture_io do
@@ -13,7 +13,7 @@ class RubustringsTest < Minitest::Test
     assert_empty err
   end
 
-  def test_Localizable_with_no_strings
+  def test_localizable_with_no_strings
     output = File.read('test/suites/Localizable_with_no_strings.out')
 
     out, err = capture_io do
