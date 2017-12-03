@@ -1,0 +1,4 @@
+[34mProcessing file: "test/suites/Localizable_number_of_variables_mismatch.in"[0m
+test/suites/Localizable_number_of_variables_mismatch.in:1: error: number of variables mismatch: "Original string with one variable %@" = "Tranlation without variables";
+[31m[1m
+Result: ✘ Some errors detected[0m[0m

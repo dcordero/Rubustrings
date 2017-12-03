@@ -1,0 +1,4 @@
+[34mProcessing file: "test/suites/Localizable_beginning_mismatch.in"[0m
+test/suites/Localizable_beginning_mismatch.in:1: error: beginning mismatch: " Original string starting with whitespace" = "Translation without the whitespace at the very beginning";
+[31m[1m
+Result: ✘ Some errors detected[0m[0m
