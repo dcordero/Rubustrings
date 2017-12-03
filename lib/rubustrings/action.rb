@@ -3,71 +3,49 @@ require 'colored'
 
 module Rubustrings
   class Action
-    attr_writer :use_xcode
-
-    def initialize
-      @use_xcode = false
-    end
 
     def validate(filenames)
       abort 'No strings file provided' unless filenames
       filenames.each do |file_name|
-        if file_name == '-xcode'
-          @use_xcode = true
-          next
-        end
-        log_output(:info, '', 0, @use_xcode, "Processing file: \"#{file_name}\"\n")
-        result = validate_localizable_string_file file_name, @use_xcode
+        log_output(:info, '', 0, "Processing file: \"#{file_name}\"\n")
+        result = validate_localizable_string_file file_name
 
         if result
-          log_output(:result_success, file_name, 0, @use_xcode, 'Strings file validated succesfully')
+          log_output(:result_success, file_name, 0, 'Strings file validated succesfully')
           exit 0
         else
-          log_output(:result_error, file_name, 0, @use_xcode, 'Some errors detected')
+          log_output(:result_error, file_name, 0, 'Some errors detected')
           exit 1
         end
       end
     end
 
     # Possible levels are :error, :result_error, :warning, :result_success, :info
-    def log_output(level, file_name, line_number, xcode_output, message)
-      if xcode_output
-        message = message.chomp
-        case level
-        when :error, :result_error
-          puts "#{file_name}:#{line_number}: error: #{message}"
-        when :warning
-          puts "#{file_name}:#{line_number}: warning: #{message}"
-        when :result_success
-          puts "✓ #{message}"
-        else
-          puts message.to_s
-        end
-      else
-        case level
-        when :error
-          puts "✘ Error, #{message}".red
-        when :result_error
-          puts "\nResult: ✘ #{message}".bold.red
-        when :warning
-          puts "⊗ Warning, #{message}".yellow
-        when :result_success
-          puts "\nResult: ✓ #{message}".bold.green
-        when :info
-          puts message.to_s.blue
-        end
+    def log_output(level, file_name, line_number, message)
+      message = message.chomp
+      case level
+      when :error
+        puts "#{file_name}:#{line_number}: error: #{message}"
+      when :warning
+        puts "#{file_name}:#{line_number}: warning: #{message}"
+      when :result_success
+        puts "\nResult: ✓ #{message}".bold.green
+      when :result_error
+        puts "\nResult: ✘ #{message}".bold.red
+      when :info
+        puts message.to_s.blue
       end
     end
 
-    def validate_localizable_string_file(file_name, use_xcode)
+    def validate_localizable_string_file(file_name)
       file_data = open_and_read_file file_name
       cleaned_strings = remove_comments_and_empty_lines file_data
 
-      return log_output(:error, file_name, 0, use_xcode, "no translations found in file: #{file_name}") if cleaned_strings.empty?
+      return log_output(:error, file_name, 0, "no translations found in file: #{file_name}") if cleaned_strings.empty?
 
       validation_result = true
       cleaned_strings.each_line do |line|
-        validation_result &= validate_translation_line file_name, line, use_xcode
+        validation_result &= validate_translation_line file_name, line
       end
       validation_result
     end
@@ -131,7 +109,7 @@ module Rubustrings
       translation_value.length / translation_key.length < 3
     end
 
-    def validate_translation_line(file_name, line, use_xcode)
+    def validate_translation_line(file_name, line)
       line_number = 0
 
       empty_regex = /^\d+\s*\n?$/
@@ -140,28 +118,28 @@ module Rubustrings
       numbered_line_regex = /^(\d+) (.*)/
       numbered_line_match = numbered_line_regex.match line
 
-      return log_output(:error, file_name, line_number, use_xcode, 'internal error') unless numbered_line_match
+      return log_output(:error, file_name, line_number, 'internal error') unless numbered_line_match
       line_number = numbered_line_match[1]
       line = numbered_line_match[2]
 
       match = validate_format line
-      return log_output(:error, file_name, line_number, use_xcode, "invalid format: #{line}") unless match
+      return log_output(:error, file_name, line_number, "invalid format: #{line}") unless match
 
       match_key = match[1]
       match_value = match[2]
 
-      log_output(:warning, file_name, line_number, use_xcode, "no translated string: #{line}") if match_value.empty?
+      log_output(:warning, file_name, line_number, "no translated string: #{line}") if match_value.empty?
 
-      log_output(:warning, file_name, line_number, use_xcode, "translation significantly large: #{line}") unless check_translation_length match_key, match_value
+      log_output(:warning, file_name, line_number, "translation significantly large: #{line}") unless check_translation_length match_key, match_value
 
       validation_special_characters = validate_special_characters match_key, match_value
-      log_output(:error, file_name, line_number, use_xcode, "number of variables mismatch: #{line}") unless validation_special_characters
+      log_output(:error, file_name, line_number, "number of variables mismatch: #{line}") unless validation_special_characters
 
       validation_special_beginning = validate_special_beginning match_key, match_value
-      log_output(:error, file_name, line_number, use_xcode, "beginning mismatch: #{line}") unless validation_special_beginning
+      log_output(:error, file_name, line_number, "beginning mismatch: #{line}") unless validation_special_beginning
 
       validation_special_ending = validate_special_ending match_key, match_value
-      log_output(:error, file_name, line_number, use_xcode, "ending mismatch: #{line}") unless validation_special_ending
+      log_output(:error, file_name, line_number, "ending mismatch: #{line}") unless validation_special_ending
 
       validation_special_characters && validation_special_beginning && validation_special_ending
     end
