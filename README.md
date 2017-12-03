@@ -36,7 +36,6 @@ It also warning on:
 dcordero@silver:~$ rubustrings Localizable.strings
 Processing file: "Localizable.strings"
 
-Processing file: "Localizable.strings"
 Localizable.strings:217: error: beginning mismatch: "Tubasa" = " Tubasa";
 Localizable.strings:220: error: number of variables mismatch: "Web %@" = "Web";
 Localizable.strings:225: error: invalid format: "bad format" = "because of a missing quote;
