@@ -33,20 +33,22 @@ It also warning on:
 ## Example
 
 ```
-dcordero@silver:~$ ./rubustrings Localizable.strings
+dcordero@silver:~$ rubustrings Localizable.strings
 Processing file: "Localizable.strings"
 
-✘ Beginning mismatch: " Tubasa" = "Tubasa";
-✘ Invalid format: "bad format" = "because of a missing quote;
-✘ Number of variables mismatch: "Web %@" = "Web";
+Processing file: "Localizable.strings"
+Localizable.strings:217: error: beginning mismatch: "Tubasa" = " Tubasa";
+Localizable.strings:220: error: number of variables mismatch: "Web %@" = "Web";
+Localizable.strings:225: error: invalid format: "bad format" = "because of a missing quote;
 
-✘ Some errors detected
+Result: ✘ Some errors detected
 ```
 
 ```
-dcordero@silver:~$ ./rubustrings Localizable.strings
+dcordero@silver:~$ rubustrings Localizable.strings
 Processing file: "Localizable.strings"
-✓ Strings file validated succesfully
+
+Result: ✓ Strings file validated succesfully
 ```
 ## XCode
 
