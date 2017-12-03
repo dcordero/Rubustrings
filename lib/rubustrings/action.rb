@@ -12,10 +12,8 @@ module Rubustrings
 
         if result
           log_output(:result_success, file_name, 0, 'Strings file validated succesfully')
-          exit 0
         else
           log_output(:result_error, file_name, 0, 'Some errors detected')
-          exit 1
         end
       end
     end
