@@ -2,14 +2,20 @@
 
 Check the format and consistency of the Localizable.strings files of iOS Apps with multi-language support
 
-[Rubustrings](https://github.com/dcordero/RubustringsXml) is also available for Android [here](https://github.com/dcordero/RubustringsXml) 
+[Rubustrings](https://github.com/dcordero/RubustringsXml) is also available for Android [here](https://github.com/dcordero/RubustringsXml)
 
 ## Usage
 
 It only needs the files to validate as arguments
 
 ```
-./rubustrings Localizable.strings
+rubustrings Localizable.strings
+```
+
+## Install
+
+```
+gem install rubustrings
 ```
 
 ## Validators
@@ -27,30 +33,42 @@ It also warning on:
 ## Example
 
 ```
-dcordero@silver:~$ ./rubustrings Localizable.strings
+dcordero@silver:~$ rubustrings Localizable.strings
 Processing file: "Localizable.strings"
 
-✘ Beginning mismatch: " Tubasa" = "Tubasa";
-✘ Invalid format: "bad format" = "because of a missing quote;
-✘ Number of variables mismatch: "Web %@" = "Web";
+Localizable.strings:217: error: beginning mismatch: "Tubasa" = " Tubasa";
+Localizable.strings:220: error: number of variables mismatch: "Web %@" = "Web";
+Localizable.strings:225: error: invalid format: "bad format" = "because of a missing quote;
 
-✘ Some errors detected
+Result: ✘ Some errors detected
 ```
 
 ```
-dcordero@silver:~$ ./rubustrings Localizable.strings
+dcordero@silver:~$ rubustrings Localizable.strings
 Processing file: "Localizable.strings"
-✓ Strings file validated succesfully
+
+Result: ✓ Strings file validated succesfully
 ```
 ## XCode
 
 Rubustrings can also be used as a custom build rule so that all .strings files
-are automatically validated at build time. This will also attempt to highlight 
-offending lines in XCode. See validate_strings_xcode.sh for instructions on how
-to set this up.
+are automatically validated at build time. This will also attempt to highlight
+offending lines in XCode.
 
 ![Xcode build rule example](./xcode_example.png "example")
 
+Just add a new "Run Script Phase" with:
+
+```
+if which rubustrings>/dev/null; then
+  find "${SRCROOT}" -type f -name Localizable.strings -print0 | xargs -0 -n1 rubustrings
+else
+  echo "warning: Rubustrings not installed, download from https://github.com/dcordero/Rubustrings"
+fi
+```
+
+![Xcode setting example](./xcode_setting.png "configuration")
+
 ## License
 
-MIT License (MIT) Copyright (c) 2014 @dcordero
+MIT License (MIT) Copyright (c) 2017 @dcordero

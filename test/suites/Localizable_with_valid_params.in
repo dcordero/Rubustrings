@@ -1,0 +1,7 @@
+"NO_ARGUMENT" = "No items";
+"MIXED_%@%d%@%d" = "Some %@ %d %@ %d arguments";
+"MIXED_POSITION_1_%@%d" = "Both %1$@ and %2$d";
+"MIXED_POSITION_2_%@%d" = "Both %2$d and %1$@";
+"LITERAL" = "I have a %% literal";
+"SOME_INTEGER_%d" = "I have %02d apples";
+"SHORT_INTEGER_%hd" = "Int %hd";

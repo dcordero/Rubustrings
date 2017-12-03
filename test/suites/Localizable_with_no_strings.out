@@ -1,0 +1,4 @@
+[34mProcessing file: "test/suites/Localizable_with_no_strings.in"[0m
+test/suites/Localizable_with_no_strings.in:0: error: no translations found in file: test/suites/Localizable_with_no_strings.in
+[31m[1m
+Result: ✘ Some errors detected[0m[0m

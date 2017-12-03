@@ -1,7 +1,7 @@
 language: objective-c
 
-before_install:
-  - brew install bats
+rvm:
+  - 2.4.1
 
 script:
-  - bats tests/tests.bats
+  - rake test

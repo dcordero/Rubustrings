@@ -1,0 +1,10 @@
+"NO_ARGUMENT" = "Invalid format %@";
+"MIXED_%@%d%@%d" = "Some %@ %d %@ with incorrect %@ arguments";
+"MIXED_POSITION_1_%@%d" = "Both %1$@ and %2$@";
+"MIXED_POSITION_2_%@%d" = "Both %2$@ and %1$d";
+"MISSING_PARAM_%@%@%@" = "Have %1$@ and %3$@ but missing 2";
+"MISSING_PARAM_2_%@%@%@" = "Have %1$@ and %2$@ but missing 3";
+"NOT_ALL_SPECIFIED_%@%@%@" = "There are %1$@ and %2$@ but no number for %@";
+"POSITION_IN_KEY_1_%1$@_%@" = "%@ %@";
+"POSITION_IN_KEY_2_%@_%1$@" = "%@ %@";
+"WRONG_LENGTH_%d" = "Short %hd";
