@@ -5,8 +5,8 @@ module Rubustrings
   class Action
     attr_writer :use_xcode
 
-    def use_xcode
-      @use_xcode || false
+    def initialize
+      @use_xcode = false
     end
 
     def validate(filenames)
@@ -16,14 +16,14 @@ module Rubustrings
           @use_xcode = true
           next
         end
-        log_output(:info, '', 0, use_xcode, "Processing file: \"#{file_name}\"\n")
-        result = validate_localizable_string_file file_name, use_xcode
+        log_output(:info, '', 0, @use_xcode, "Processing file: \"#{file_name}\"\n")
+        result = validate_localizable_string_file file_name, @use_xcode
 
         if result
-          log_output(:result_success, file_name, 0, use_xcode, 'Strings file validated succesfully')
+          log_output(:result_success, file_name, 0, @use_xcode, 'Strings file validated succesfully')
           exit 0
         else
-          log_output(:result_error, file_name, 0, use_xcode, 'Some errors detected')
+          log_output(:result_error, file_name, 0, @use_xcode, 'Some errors detected')
           exit 1
         end
       end
@@ -145,7 +145,7 @@ module Rubustrings
       line = numbered_line_match[2]
 
       match = validate_format line
-      return log_output(:error, file_name, line_number, use_xcode, "invalid format: _#{line}_") unless match
+      return log_output(:error, file_name, line_number, use_xcode, "invalid format: #{line}") unless match
 
       match_key = match[1]
       match_value = match[2]

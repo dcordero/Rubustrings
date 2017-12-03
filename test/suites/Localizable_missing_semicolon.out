@@ -1,0 +1,5 @@
+[34mProcessing file: "test/suites/Localizable_missing_semicolon.in"
+[0m
+[31m✘ Error, invalid format: "Any String" = "Any String"[0m
+[31m[1m
+Result: ✘ Some errors detected[0m[0m
