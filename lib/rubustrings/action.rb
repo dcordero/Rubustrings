@@ -12,8 +12,10 @@ module Rubustrings
 
         if result
           log_output(:result_success, file_name, 0, 'Strings file validated succesfully')
+          return true
         else
           log_output(:result_error, file_name, 0, 'Some errors detected')
+          return false
         end
       end
     end
@@ -155,7 +157,7 @@ module Rubustrings
       match = validate_format line
       return log_output(:error, file_name, line_number, "invalid format: #{line}") unless match
 
-      return if only_format
+      return true if only_format
 
       match_key = match[1]
       match_value = match[2]

@@ -5,4 +5,8 @@ require 'rubustrings'
 filename = ARGV[0]
 parameter = ARGV.last
 
-Rubustrings.validate([filename], parameter == "--onlyformat")
+if Rubustrings.validate([filename], parameter == "--onlyformat")
+    exit 0
+else 
+    exit 1
+end
