@@ -67,4 +67,15 @@ class RubustringsTest < Minitest::Test
     assert_match output, out
     assert_empty err
   end
+
+  def test_onlyformat
+    output = File.read('test/suites/Localizable_with_invalid_format_and_more_errors.out')
+
+    out, err = capture_io do
+      Rubustrings.validate(['test/suites/Localizable_with_invalid_format_and_more_errors.in'], true)
+    end
+
+    assert_match output, out
+    assert_empty err
+  end
 end

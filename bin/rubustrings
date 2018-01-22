@@ -1,4 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'rubustrings'
-Rubustrings.validate(ARGV)
+
+filename = ARGV[0]
+parameter = ARGV.last
+
+if Rubustrings.validate([filename], parameter == "--onlyformat")
+    exit 0
+else 
+    exit 1
+end

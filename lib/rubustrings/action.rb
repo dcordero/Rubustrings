@@ -4,16 +4,18 @@ require 'colored'
 module Rubustrings
   class Action
 
-    def validate(filenames)
+    def validate(filenames, only_format)
       abort 'No strings file provided' unless filenames
       filenames.each do |file_name|
         log_output(:info, '', 0, "Processing file: \"#{file_name}\"\n")
-        result = validate_localizable_string_file file_name
+        result = validate_localizable_string_file file_name, only_format
 
         if result
           log_output(:result_success, file_name, 0, 'Strings file validated succesfully')
+          return true
         else
           log_output(:result_error, file_name, 0, 'Some errors detected')
+          return false
         end
       end
     end
@@ -35,7 +37,7 @@ module Rubustrings
       end
     end
 
-    def validate_localizable_string_file(file_name)
+    def validate_localizable_string_file(file_name, only_format) 
       file_data = open_and_read_file file_name
       cleaned_strings = remove_comments_and_empty_lines file_data
 
@@ -43,7 +45,7 @@ module Rubustrings
 
       validation_result = true
       cleaned_strings.each_line do |line|
-        validation_result &= validate_translation_line file_name, line
+        validation_result &= validate_translation_line file_name, line, only_format
       end
       validation_result
     end
@@ -139,7 +141,7 @@ module Rubustrings
       translation_value.length / translation_key.length < 3
     end
 
-    def validate_translation_line(file_name, line)
+    def validate_translation_line(file_name, line, only_format)
       line_number = 0
 
       empty_regex = /^\d+\s*\n?$/
@@ -154,6 +156,8 @@ module Rubustrings
 
       match = validate_format line
       return log_output(:error, file_name, line_number, "invalid format: #{line}") unless match
+
+      return true if only_format
 
       match_key = match[1]
       match_value = match[2]

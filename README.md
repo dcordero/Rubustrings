@@ -12,6 +12,8 @@ It only needs the files to validate as arguments
 rubustrings Localizable.strings
 ```
 
+Additionally to the filenames, including the option --onlyformat will only assert for the format.
+
 ## Install
 
 ```
