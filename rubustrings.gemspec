@@ -9,5 +9,6 @@ Gem::Specification.new do |s|
   s.executables = 'rubustrings'
   s.files       = ['lib/rubustrings.rb', 'lib/rubustrings/action.rb']
   s.homepage    = 'https://github.com/dcordero/Rubustrings'
-  s.license     = 'MIT'
+  s.license     = 'MIT'  
+  s.add_dependency 'colored'
 end
