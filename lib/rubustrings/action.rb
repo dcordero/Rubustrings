@@ -154,6 +154,10 @@ module Rubustrings
       line_number = numbered_line_match[1]
       line = numbered_line_match[2]
 
+      # skip # character, single line and multi line comments.
+      comments_regex = /(?:#[^\n]*|\/\/[^\n]*|\/\*(?:(?!\*\/).)*\*\/)/
+      return true if comments_regex.match line
+      
       match = validate_format line
       return log_output(:error, file_name, line_number, "invalid format: #{line}") unless match
 
